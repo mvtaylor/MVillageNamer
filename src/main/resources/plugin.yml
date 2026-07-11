@@ -1,0 +1,17 @@
+name: VillageNamer
+version: 1.3.0
+main: gay.viktoria.villagenamer.VillageNamerPlugin
+description: A plugin to automatically assign names to villagers.
+author: Maria T
+website: https://viktoria.gay
+api-version: '1.21.11'
+
+commands:
+  namechunk:
+    description: Assigns names to unnamed villagers in the chunk of the executor.
+    usage: /namechunk
+    permission: villagenamer.namechunk
+  renametag:
+    description: Gives the player a name tag with the custom name "RENAMEME" to application in renaming.
+    usage: /renametag
+    permission: villagenamer.renametag
