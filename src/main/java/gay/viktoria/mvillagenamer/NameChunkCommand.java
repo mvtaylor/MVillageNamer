@@ -1,4 +1,4 @@
-package gay.viktoria.villagenamer;
+package gay.viktoria.mvillagenamer;
 
 import org.bukkit.Chunk;
 import org.bukkit.command.Command;

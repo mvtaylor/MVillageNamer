@@ -1,8 +1,8 @@
-name: VillageNamer
+name: MVillageNamer
 version: 1.3.0
-main: gay.viktoria.villagenamer.VillageNamerPlugin
+main: gay.viktoria.mvillagenamer.VillageNamerPlugin
 description: A plugin to automatically assign names to villagers.
-author: Maria T
+author: Maria Taylor
 website: https://viktoria.gay
 api-version: '1.21.11'
 

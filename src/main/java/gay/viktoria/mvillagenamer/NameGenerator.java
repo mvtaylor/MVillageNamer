@@ -1,4 +1,4 @@
-package gay.viktoria.villagenamer;
+package gay.viktoria.mvillagenamer;
 
 import java.util.ArrayList;
 import java.util.Collections;
