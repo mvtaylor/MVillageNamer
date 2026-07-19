@@ -48,7 +48,7 @@ java {
 }
 
 group = "gay.viktoria"
-version = "1.3.0"
+version = "1.4.0"
 
 tasks.jar {
   manifest {
