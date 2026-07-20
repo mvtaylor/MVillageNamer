@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
 
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
 
     // Use JUnit Jupiter for testing.
     //testImplementation(libs.junit.jupiter)
@@ -43,12 +43,12 @@ dependencies {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
 group = "gay.viktoria"
-version = "1.3.0"
+version = "1.4.0"
 
 tasks.jar {
   manifest {
@@ -71,7 +71,7 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.11")
+        minecraftVersion("26.1.2")
   }
 }
 
