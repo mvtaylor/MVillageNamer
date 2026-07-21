@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
+group = "gay.viktoria"
+version = "1.4.1"
+
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
@@ -17,8 +20,8 @@ repositories {
     mavenCentral()
 
     maven {
-    name = "papermc"
-    url = uri("https://repo.papermc.io/repository/maven-public/")
+        name = "papermc"
+        url = uri("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
@@ -33,9 +36,6 @@ java {
         languageVersion = JavaLanguageVersion.of(25)
     }
 }
-
-group = "gay.viktoria"
-version = "1.4.1"
 
 tasks.jar {
   manifest {
