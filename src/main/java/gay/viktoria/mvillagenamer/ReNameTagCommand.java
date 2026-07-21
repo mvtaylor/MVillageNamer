@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 Maria Taylor
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
 package gay.viktoria.mvillagenamer;
 
 import org.bukkit.Material;
