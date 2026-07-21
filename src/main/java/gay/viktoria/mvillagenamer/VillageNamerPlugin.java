@@ -86,6 +86,7 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         startPeriodicNameCheck();
     }
 
+    // TODO: add option for single-variant names to be strings rather than singleton arrays
     private int loadNames() {
         var names = getConfig().getList("names");
         if (names == null || names.isEmpty()) {
