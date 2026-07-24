@@ -31,10 +31,6 @@ import org.bukkit.Chunk;
 
 public class VillageNamerPlugin extends JavaPlugin implements Listener {
     
-    //private VillagerDataManager vdmanager; //static or nah?
-
-    //public final MiniMessage mm = MiniMessage.miniMessage();
-
     private NameGenerator NameGen;
 
     private boolean debugEnabled;
