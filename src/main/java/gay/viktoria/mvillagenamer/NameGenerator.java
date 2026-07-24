@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.Collection;
 
 public class NameGenerator extends CircularList<ArrayList<String>> {
-    //private static final Map<String, List<String>> NAME_MAP = new HashMap<>();
+    
     private static final Random RANDOM = new Random();
 
     public NameGenerator(Collection<ArrayList<String>> namelist) {

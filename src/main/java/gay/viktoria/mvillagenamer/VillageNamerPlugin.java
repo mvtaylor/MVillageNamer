@@ -9,7 +9,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-//import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.logging.Level;
 
@@ -39,10 +38,8 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
 
         Bukkit.getPluginManager().registerEvents(this, this);
-        //this.getLogger();
         getLogger().log(Level.INFO, "Registered events");
 
-        // saveResource("config.yml", /* replace */ false); // shouldn't be necessary with the below
         saveDefaultConfig();
 
         // Load debug-printing enabled/disabled
@@ -181,9 +178,9 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         }
         debug(() -> String.format("nameChunk: Found villager %s with custom name: '%s' ---- or as plain text, '%s'",
                 villager.getUniqueId().toString(), customNameForLog, plaintextForLog));
-        debug(() -> "cnamestr: " + cnamestr); // comment out or make fine later
+        debug(() -> "cnamestr: " + cnamestr);
         if (cname == null || cnamestr == null || cnamestr.isEmpty() || cnamestr.equals("RENAMEME")) {
-            debug(() -> "Naming villager..."); // comment out or make fine when later
+            debug(() -> "Naming villager...");
             nameVillager(villager);
         }
     }
