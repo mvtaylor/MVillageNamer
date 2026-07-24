@@ -2,10 +2,6 @@
  * Copyright (C) 2026 Maria Taylor
  * SPDX-License-Identifier: GPL-3.0-only
  */
-
-group = "gay.viktoria"
-version = "1.4.1"
-
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
@@ -14,6 +10,9 @@ plugins {
     // run-paper gradle plugin
     id("xyz.jpenilla.run-paper") version "3.0.2"
 }
+
+group = "gay.viktoria"
+version = "1.4.1"
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -37,6 +36,14 @@ java {
     }
 }
 
+tasks {
+    // run-paper plugin
+    runServer {
+        // Configure the Minecraft version for the task.
+        minecraftVersion("26.1.2")
+    }
+}
+
 tasks.jar {
   manifest {
     attributes["paperweight-mappings-namespace"] = "mojang"
@@ -51,11 +58,3 @@ publishing {
     }
 }
 
-
-tasks {
-    // run-paper plugin
-    runServer {
-        // Configure the Minecraft version for the task.
-        minecraftVersion("26.1.2")
-  }
-}
