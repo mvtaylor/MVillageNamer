@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -36,6 +37,8 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
 
     private NameGenerator NameGen;
 
+    private boolean debugEnabled;
+
     @Override
     public void onEnable() {
 
@@ -43,7 +46,7 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         //this.getLogger();
         getLogger().log(Level.INFO, "Registered events");
 
-        saveResource("config.yml", /* replace */ false);
+        // saveResource("config.yml", /* replace */ false); // shouldn't be necessary with the below
         saveDefaultConfig();
 
         // load the log verbosity from config
@@ -58,6 +61,12 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         
         getLogger().setLevel(logLevel);
         getLogger().info(String.format("Loaded log verbosity level from config: %s", logLevel.toString()));
+
+        // end log verb section
+
+        // Load debug boolean
+        debugEnabled = getConfig().getBoolean("debug-print", false);
+        getLogger().info("Loaded debug printing info from config: %s".formatted(Boolean.toString(debugEnabled)));
 
         // Register the /namechunk command
         this.getCommand("namechunk").setExecutor(new NameChunkCommand(this));
@@ -86,7 +95,6 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         startPeriodicNameCheck();
     }
 
-    // TODO: add option for single-variant names to be strings rather than singleton arrays
     private int loadNames() {
         var names = getConfig().getList("names");
         if (names == null || names.isEmpty()) {
@@ -111,7 +119,7 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
             }
 
             namesCircList.add(nameSubArr);
-            getLogger().finest("Found name: %s".formatted(nameSubArr.toString()));
+            debug(() -> "Found name: %s".formatted(nameSubArr.toString()));
         }
 
         if (namesCircList.isEmpty()) {
@@ -203,5 +211,11 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         // Log info message every time a name is set for a villager. Possibly disable later...
         // ... or make configurable.
         getLogger().info("Applied name '" + name + "' to villager " + villager.getUniqueId().toString());
+    }
+
+    public void debug(Supplier<String> messageSupplier) {
+        if (debugEnabled) {
+            getLogger().info("[DEBUG] " + messageSupplier.get());
+        }
     }
 }
