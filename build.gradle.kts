@@ -13,6 +13,7 @@ plugins {
 
 group = "gay.viktoria"
 version = "1.4.1"
+description = "A plugin to automatically assign names to villagers."
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -41,6 +42,20 @@ tasks {
     runServer {
         // Configure the Minecraft version for the task.
         minecraftVersion("26.1.2")
+    }
+}
+
+tasks.processResources {
+    val properties = mapOf(
+        "version" to project.version.toString(),
+        "description" to project.description.orEmpty()
+    )
+
+    inputs.properties(properties)
+    filteringCharset = "UTF-8"
+
+    filesMatching("plugin.yml") {
+        expand(properties)
     }
 }
 
