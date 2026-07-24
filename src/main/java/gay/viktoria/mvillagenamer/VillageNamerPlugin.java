@@ -98,9 +98,20 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         CircularList<ArrayList<String>> namesCircList = new CircularList<ArrayList<String>>();
 
         for (var member : names.toArray()) {
-            @SuppressWarnings("unchecked")
-            ArrayList<String> nameSubArr = (ArrayList<String>) member;
+            ArrayList<String> nameSubArr = new ArrayList<>();
+
+            if (member instanceof String s) {
+                nameSubArr.add(s);
+            }
+            else if (member instanceof List<?> l && l.stream().allMatch(String.class::isInstance)) {
+                @SuppressWarnings("unchecked")
+                List<String> strings = (List<String>) l;
+
+                nameSubArr.addAll(strings);
+            }
+
             namesCircList.add(nameSubArr);
+            getLogger().finest("Found name: %s".formatted(nameSubArr.toString()));
         }
 
         if (namesCircList.isEmpty()) {
