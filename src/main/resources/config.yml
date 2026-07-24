@@ -1,3 +1,4 @@
+debug-print: false
 names:
   - ["Avraham", "Abraham"]
   - ["Yitzchak", "Isaac"]
