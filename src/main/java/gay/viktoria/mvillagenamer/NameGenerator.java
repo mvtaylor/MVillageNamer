@@ -18,7 +18,9 @@ public class NameGenerator extends CircularList<ArrayList<String>> {
     public NameGenerator(Collection<ArrayList<String>> namelist) {
         super();
 
-        // TODO: add in error handling for empty namelist
+        if (namelist.isEmpty()) {
+            throw new IllegalArgumentException("namelist provided to NameGenerator cannot be empty!");
+        }
 
         this.addAll(new ArrayList<>(namelist));
 

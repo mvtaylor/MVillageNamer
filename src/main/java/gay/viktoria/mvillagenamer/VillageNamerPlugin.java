@@ -68,7 +68,9 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
                 getLogger().log(Level.INFO, "Names successfully loaded from config");
                 break;
             case 1: // failure
-                getLogger().log(Level.WARNING, "Failed to load names from config!");
+                getLogger().log(Level.SEVERE, "Failed to load names from config! Disabling.");
+                getServer().getPluginManager().disablePlugin(this);
+                return;
             default:
                 break;
         }
@@ -83,7 +85,8 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
     private int loadNames() {
         var names = getConfig().getList("names");
         if (names == null || names.isEmpty()) {
-            getLogger().log(Level.WARNING, "Was not able to load any names from config.yml. Perhaps it is empty?");
+            // Shouldn't reach this point because .getList() should return the default config list if the "names" path doesn't exist or it is empty
+            getLogger().log(Level.SEVERE, "Was not able to load any names from config.yml. Perhaps it is empty?");
             return 1;
         }
 
