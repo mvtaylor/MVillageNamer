@@ -9,7 +9,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-//import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.logging.Level;
 
@@ -31,10 +30,6 @@ import org.bukkit.Chunk;
 
 public class VillageNamerPlugin extends JavaPlugin implements Listener {
     
-    //private VillagerDataManager vdmanager; //static or nah?
-
-    //public final MiniMessage mm = MiniMessage.miniMessage();
-
     private NameGenerator NameGen;
 
     private boolean debugEnabled;
@@ -43,28 +38,11 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
 
         Bukkit.getPluginManager().registerEvents(this, this);
-        //this.getLogger();
         getLogger().log(Level.INFO, "Registered events");
 
-        // saveResource("config.yml", /* replace */ false); // shouldn't be necessary with the below
         saveDefaultConfig();
 
-        // load the log verbosity from config
-        String logverbLevelName = getConfig().getString("log-level");
-        Level logLevel;
-        try {
-            logLevel = Level.parse(logverbLevelName);
-        } catch (IllegalArgumentException e) {
-            logLevel = Level.INFO;
-            getLogger().warning("Invalid log level in config, defaulting to INFO");
-        }
-        
-        getLogger().setLevel(logLevel);
-        getLogger().info(String.format("Loaded log verbosity level from config: %s", logLevel.toString()));
-
-        // end log verb section
-
-        // Load debug boolean
+        // Load debug-printing enabled/disabled
         debugEnabled = getConfig().getBoolean("debug-print", false);
         getLogger().info("Loaded debug printing info from config: %s".formatted(Boolean.toString(debugEnabled)));
 
@@ -74,8 +52,6 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         this.getCommand("renametag").setExecutor(new ReNameTagCommand());
         getLogger().info("Successfully registered the /renametag command");
 
-        // TODO: stick that when right-clicked on villager renames them
-
 
         int lNsuccess = loadNames();
         switch (lNsuccess) {
@@ -83,7 +59,9 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
                 getLogger().log(Level.INFO, "Names successfully loaded from config");
                 break;
             case 1: // failure
-                getLogger().log(Level.WARNING, "Failed to load names from config!");
+                getLogger().log(Level.SEVERE, "Failed to load names from config! Disabling.");
+                getServer().getPluginManager().disablePlugin(this);
+                return;
             default:
                 break;
         }
@@ -98,7 +76,8 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
     private int loadNames() {
         var names = getConfig().getList("names");
         if (names == null || names.isEmpty()) {
-            getLogger().log(Level.WARNING, "Was not able to load any names from config.yml. Perhaps it is empty?");
+            // Shouldn't reach this point because .getList() should return the default config list if the "names" path doesn't exist or it is empty
+            getLogger().log(Level.SEVERE, "Was not able to load any names from config.yml. Perhaps it is empty?");
             return 1;
         }
 
@@ -186,17 +165,20 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         Component cname = villager.customName();
         String cnamestr = PlainTextComponentSerializer.plainText().serializeOrNull(cname);
 
-        String customNameForLog = "<NO CUSTOM NAME>";
-        String plaintextForLog = "<NO CUSTOM NAME>";
+        final String customNameForLog;
+        final String plaintextForLog;
         if (cnamestr != null) {
             customNameForLog = cname.toString();
             plaintextForLog = cnamestr;
+        } else {
+            customNameForLog = "<NO CUSTOM NAME>";
+            plaintextForLog = "<NO CUSTOM NAME>";
         }
-        getLogger().fine(String.format("nameChunk: Found villager %s with custom name: '%s' ---- or as plain text, '%s'",
+        debug(() -> String.format("nameChunk: Found villager %s with custom name: '%s' ---- or as plain text, '%s'",
                 villager.getUniqueId().toString(), customNameForLog, plaintextForLog));
-        getLogger().finer("cnamestr: " + cnamestr); // comment out or make fine later
+        debug(() -> "cnamestr: " + cnamestr);
         if (cname == null || cnamestr == null || cnamestr.isEmpty() || cnamestr.equals("RENAMEME")) {
-            getLogger().finer("Naming villager..."); // comment out or make fine when later
+            debug(() -> "Naming villager...");
             nameVillager(villager);
         }
     }

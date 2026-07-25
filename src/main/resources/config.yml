@@ -1,5 +1,4 @@
-log-level: FINE # SEVERE; WARNING; INFO; CONFIG; FINE; FINER; FINEST = -2; -1; 0; 1; 2; 3; 4
-debug-print: true
+debug-print: false
 names:
   - ["Avraham", "Abraham"]
   - ["Yitzchak", "Isaac"]
