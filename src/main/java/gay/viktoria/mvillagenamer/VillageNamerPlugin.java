@@ -52,8 +52,6 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         this.getCommand("renametag").setExecutor(new ReNameTagCommand());
         getLogger().info("Successfully registered the /renametag command");
 
-        // TODO: stick that when right-clicked on villager renames them
-
 
         int lNsuccess = loadNames();
         switch (lNsuccess) {
