@@ -4,7 +4,7 @@ main: gay.viktoria.mvillagenamer.VillageNamerPlugin
 description: ${description}
 author: Maria Taylor
 website: https://viktoria.gay
-api-version: '26.1.2'
+api-version: '26.2'
 
 commands:
   namechunk:
