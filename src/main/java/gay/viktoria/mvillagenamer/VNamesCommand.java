@@ -11,8 +11,6 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 
 public class VNamesCommand {
-    
-    public static String cmdName = "vnames";
 
     private final VillageNamerPlugin vnp;
 
@@ -21,8 +19,8 @@ public class VNamesCommand {
     }
 
     @SuppressWarnings("null")
-    public LiteralCommandNode<CommandSourceStack> createCommand(final String commandName) {
-        return Commands.literal(commandName)
+    public LiteralCommandNode<CommandSourceStack> createCommand() {
+        return Commands.literal("vnames")
             .then(Commands.literal("add")
                 .then(Commands.argument("names", StringArgumentType.greedyString())
                     .executes(ctx -> {
@@ -55,12 +53,16 @@ public class VNamesCommand {
                 .executes(ctx -> {
                     this.vnp.saveConfig();
 
+                    ctx.getSource().getSender().sendMessage("Saving current name configuration to disk...");
+
                     return Command.SINGLE_SUCCESS;
                 })
             )
             .then(Commands.literal("reload")
                 .executes(ctx -> {
                     this.vnp.reloadConfig();
+
+                    ctx.getSource().getSender().sendMessage("Reloading names from config...");
 
                     return Command.SINGLE_SUCCESS;
                 })
@@ -69,7 +71,7 @@ public class VNamesCommand {
     }
 
     public void addName(String namesString) {
-
+        this.vnp.addName(namesString); // temporarily we don't care about variants, including whole string
     }
 
     public void removeName(String name) {

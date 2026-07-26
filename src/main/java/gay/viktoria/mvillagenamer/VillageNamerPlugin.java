@@ -7,6 +7,7 @@ package gay.viktoria.mvillagenamer;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
@@ -51,6 +52,11 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         getLogger().info("Successfully registered the /namechunk command");
         this.getCommand("renametag").setExecutor(new ReNameTagCommand());
         getLogger().info("Successfully registered the /renametag command");
+
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            VNamesCommand vncmd = new VNamesCommand(this);
+            commands.registrar().register(vncmd.createCommand(), "Manage villager names");
+        });
 
 
         int lNsuccess = loadNames();
@@ -209,5 +215,25 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         }
 
         return namesCircList;
+    }
+
+    public void addName(String name) {
+        List<?> l = getConfig().getList("names");
+        if (!l.stream().allMatch(Object.class::isInstance)) {
+            return;
+        };
+
+        @SuppressWarnings("unchecked")
+        List<Object> names = (List<Object>) l;
+        names.add(name);
+
+        // different key, just for testing
+        getConfig().set("names2", names);
+        
+        saveConfig();
+
+        reloadConfig();
+
+        loadNames();
     }
 }
