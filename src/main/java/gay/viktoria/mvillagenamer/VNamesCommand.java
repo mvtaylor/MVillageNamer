@@ -1,5 +1,6 @@
 package gay.viktoria.mvillagenamer;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class VNamesCommand {
                     .executes(ctx -> {
                         final String namesString = ctx.getArgument("names", String.class);
 
-                        addName(namesString);
+                        addName(ctx.getSource(), namesString);
 
                         return Command.SINGLE_SUCCESS;
                     })
@@ -70,8 +71,24 @@ public class VNamesCommand {
         .build();
     }
 
-    public void addName(String namesString) {
-        this.vnp.addName(namesString); // temporarily we don't care about variants, including whole string
+    public void addName(CommandSourceStack sourceStack, String namesString) {
+        String[] names = namesString.split("\\s+");
+
+        assert names.length > 0;
+
+        String _msg = "Added name: ";
+
+        if (names.length == 1) {
+            this.vnp.addName(names[0]);
+            _msg += names[0];
+        }
+        else {
+            List<String> nameList = List.of(names);
+            this.vnp.addName(nameList);
+            _msg += nameList.toString();
+        }
+
+        sourceStack.getSender().sendMessage(_msg);
     }
 
     public void removeName(String name) {
