@@ -227,9 +227,32 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         List<Object> names = (List<Object>) l;
         names.add(name);
 
-        // different key, just for testing
-        getConfig().set("names2", names);
+        getConfig().set("names", names);
         
+        saveConfig();
+
+        reloadConfig();
+
+        loadNames();
+    }
+
+    public void addName(List<String> nameVariants) {
+        List<?> l = getConfig().getList("names");
+        if (!l.stream().allMatch(Object.class::isInstance)) {
+            return;
+        }
+        ;
+
+        @SuppressWarnings("unchecked")
+        List<Object> names = (List<Object>) l;
+
+        List<String> newNames = new ArrayList<>();
+        newNames.addAll(nameVariants);
+
+        names.add(newNames);
+
+        getConfig().set("names", names);
+
         saveConfig();
 
         reloadConfig();
