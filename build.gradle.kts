@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "gay.viktoria"
-version = "1.4.2"
+version = "1.4.3"
 description = "A plugin to automatically assign names to villagers."
 
 repositories {
@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
 
-    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -41,7 +41,7 @@ tasks {
     // run-paper plugin
     runServer {
         // Configure the Minecraft version for the task.
-        minecraftVersion("26.1.2")
+        minecraftVersion("26.2")
     }
 }
 
