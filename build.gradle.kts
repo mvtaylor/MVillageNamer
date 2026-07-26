@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "gay.viktoria"
-version = "1.4.2"
+version = "1.4.3"
 description = "A plugin to automatically assign names to villagers."
 
 repositories {
