@@ -74,41 +74,15 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
     }
 
     int loadNames() {
-        var names = getConfig().getList("names");
-        if (names == null || names.isEmpty()) {
-            // Shouldn't reach this point because .getList() should return the default config list if the "names" path doesn't exist or it is empty
+        try {
+            final CircularList<ArrayList<String>> names = getConfigNames();
+            NameGen = new NameGenerator(names);
+
+            return 0;
+        } catch (IllegalStateException e) {
             getLogger().log(Level.SEVERE, "Was not able to load any names from config.yml. Perhaps it is empty?");
             return 1;
         }
-
-        
-        CircularList<ArrayList<String>> namesCircList = new CircularList<ArrayList<String>>();
-
-        for (var member : names.toArray()) {
-            ArrayList<String> nameSubArr = new ArrayList<>();
-
-            if (member instanceof String s) {
-                nameSubArr.add(s);
-            }
-            else if (member instanceof List<?> l && l.stream().allMatch(String.class::isInstance)) {
-                @SuppressWarnings("unchecked")
-                List<String> strings = (List<String>) l;
-
-                nameSubArr.addAll(strings);
-            }
-
-            namesCircList.add(nameSubArr);
-            debug(() -> "Found name: %s".formatted(nameSubArr.toString()));
-        }
-
-        if (namesCircList.isEmpty()) {
-            getLogger().log(Level.WARNING, "Was not able to load any names from config.yml. Perhaps it is empty?");
-            return 1;
-        }
-
-        NameGen = new NameGenerator(namesCircList);
-
-        return 0;
     }
 
     @EventHandler
@@ -199,5 +173,41 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         if (debugEnabled) {
             getLogger().info("[DEBUG] " + messageSupplier.get());
         }
+    }
+
+    CircularList<ArrayList<String>> getConfigNames() throws IllegalStateException {
+        var names = getConfig().getList("names");
+        if (names == null || names.isEmpty()) {
+            // Shouldn't reach this point because .getList() should return the default config list if the "names" path doesn't exist or it is empty
+            throw new IllegalStateException("Was not able to load any names from config.yml. Perhaps it is empty?");
+            //return 1;
+        }
+
+        
+        CircularList<ArrayList<String>> namesCircList = new CircularList<ArrayList<String>>();
+
+        for (var member : names.toArray()) {
+            ArrayList<String> nameSubArr = new ArrayList<>();
+
+            if (member instanceof String s) {
+                nameSubArr.add(s);
+            }
+            else if (member instanceof List<?> l && l.stream().allMatch(String.class::isInstance)) {
+                @SuppressWarnings("unchecked")
+                List<String> strings = (List<String>) l;
+
+                nameSubArr.addAll(strings);
+            }
+
+            namesCircList.add(nameSubArr);
+            debug(() -> "Found name: %s".formatted(nameSubArr.toString()));
+        }
+
+        if (namesCircList.isEmpty()) {
+            throw new IllegalStateException("Was not able to load any names from config.yml. Perhaps it is empty?");
+            //return 1;
+        }
+
+        return namesCircList;
     }
 }
