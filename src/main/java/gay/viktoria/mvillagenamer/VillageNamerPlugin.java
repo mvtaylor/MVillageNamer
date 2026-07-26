@@ -73,7 +73,7 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         startPeriodicNameCheck();
     }
 
-    private int loadNames() {
+    int loadNames() {
         var names = getConfig().getList("names");
         if (names == null || names.isEmpty()) {
             // Shouldn't reach this point because .getList() should return the default config list if the "names" path doesn't exist or it is empty
