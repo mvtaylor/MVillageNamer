@@ -1,5 +1,8 @@
 package gay.viktoria.mvillagenamer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -74,6 +77,22 @@ public class VNamesCommand {
     }
 
     private void listNames(CommandSourceStack sourceStack) {
+        CircularList<ArrayList<String>> names = this.vnp.getConfigNames();
+
+        List<String> nameStrings = new ArrayList<>();
+
+        for (ArrayList<String> nameVars : names) {
+            final String nameColl;
+            if (nameVars.size() == 1) {
+                nameColl = nameVars.get(0);
+            } else {
+                nameColl = nameVars.toString();
+            }
+            nameStrings.add(nameColl);
+        }
+
+        String _msg = String.join("\n", nameStrings);
         
+        sourceStack.getSender().sendMessage(_msg);
     }
 }
