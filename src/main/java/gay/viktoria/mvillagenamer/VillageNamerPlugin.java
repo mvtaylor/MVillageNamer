@@ -257,7 +257,7 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         loadNames();
     }
 
-    public void removeName(String name) {
+    public int removeName(String name) {
         List<?> l = getConfig().getList("names");
         if (!l.stream().allMatch(Object.class::isInstance)) {
             throw new IllegalStateException("All list members must be Object's");
@@ -266,24 +266,28 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         @SuppressWarnings("unchecked")
         List<Object> names = (List<Object>) l;
 
-        // int numRemoved = 0;
+        int numRemoved = 0;
 
-        names.forEach(obj -> {
-            if (obj instanceof String s && s.equals(name)) {
-                names.remove(obj);
+        for (var nameobj : names) {
+            if (nameobj instanceof String s && s.equals(name)) {
+                names.remove(nameobj);
+                numRemoved += 1;
             }
-            else if (obj instanceof List<?> variants) {
-                variants.forEach(variant -> {
+            else if (nameobj instanceof List<?> variants) {
+                for (var variant : variants) {
                     if (variant instanceof String s && s.equals(name)) {
                         variants.remove(variant);
+                        numRemoved += 1;
                     }
-                });
-            } 
-        });
+                }
+            }
+        }
 
         getConfig().set("names", names);
         saveConfig();
         reloadConfig();
         loadNames();
+
+        return numRemoved;
     }
 }
