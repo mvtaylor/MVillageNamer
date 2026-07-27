@@ -43,7 +43,7 @@ public class VNamesCommand {
                     .executes(ctx -> {
                         final String name = ctx.getArgument("name", String.class);
 
-                        removeName(name);
+                        removeName(ctx.getSource(), name);
 
                         return Command.SINGLE_SUCCESS;
                     })
@@ -90,8 +90,9 @@ public class VNamesCommand {
         sourceStack.getSender().sendMessage(_msg);
     }
 
-    public void removeName(String name) {
-
+    public void removeName(CommandSourceStack sourceStack, String name) {
+        this.vnp.removeName(name);
+        sourceStack.getSender().sendMessage("Removed all instances of name '%s' from name list.".formatted(name));
     }
 
     private void listNames(CommandSourceStack sourceStack) {
