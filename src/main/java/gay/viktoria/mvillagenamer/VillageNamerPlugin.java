@@ -35,6 +35,7 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
 
     private boolean debugEnabled;
 
+    @SuppressWarnings("null")
     @Override
     public void onEnable() {
 
