@@ -22,7 +22,7 @@ public class VNamesCommand {
     public LiteralCommandNode<CommandSourceStack> createCommand() {
         return Commands.literal("vnames")
             .then(Commands.literal("add")
-                .then(Commands.argument("names", StringArgumentType.greedyString())
+                .then(Commands.argument("names", new StringListArgument())
                     .executes(ctx -> {
                         final String namesString = ctx.getArgument("names", String.class);
 
@@ -70,7 +70,7 @@ public class VNamesCommand {
         .build();
     }
 
-    public void addName(CommandSourceStack sourceStack, String namesString) {
+    private void addName(CommandSourceStack sourceStack, String namesString) {
         String[] names = namesString.split("\\s+");
 
         assert names.length > 0;
@@ -90,7 +90,7 @@ public class VNamesCommand {
         sourceStack.getSender().sendMessage(_msg);
     }
 
-    public void removeName(CommandSourceStack sourceStack, String name) {
+    private void removeName(CommandSourceStack sourceStack, String name) {
         this.vnp.removeName(name);
         sourceStack.getSender().sendMessage("Removed all instances of name '%s' from name list.".formatted(name));
     }
