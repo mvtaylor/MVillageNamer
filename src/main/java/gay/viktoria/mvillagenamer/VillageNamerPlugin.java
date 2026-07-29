@@ -14,6 +14,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import java.util.logging.Level;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -269,6 +270,7 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
 
         int numRemoved = 0;
 
+        /* 
         for (var nameobj : names) {
             if (nameobj instanceof String s && s.equals(name)) {
                 names.remove(nameobj);
@@ -278,6 +280,30 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
                 for (var variant : variants) {
                     if (variant instanceof String s && s.equals(name)) {
                         variants.remove(variant);
+                        numRemoved += 1;
+                    }
+                }
+            }
+        }
+         */
+
+        Iterator<Object> it = names.iterator();
+
+        while (it.hasNext()) {
+            Object obj = it.next();
+
+            if (obj instanceof String s && s.equals(name)) {
+                it.remove();
+                numRemoved += 1;
+            }
+            else if (obj instanceof List<?> variants) {
+                Iterator<?> subit = variants.iterator();
+
+                while (subit.hasNext()) {
+                    var subname = subit.next();
+
+                    if (subname instanceof String s && s.equals(name)) {
+                        subit.remove();
                         numRemoved += 1;
                     }
                 }
