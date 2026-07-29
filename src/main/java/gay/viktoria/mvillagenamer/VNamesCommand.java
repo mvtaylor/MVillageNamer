@@ -24,9 +24,10 @@ public class VNamesCommand {
             .then(Commands.literal("add")
                 .then(Commands.argument("names", new StringListArgument())
                     .executes(ctx -> {
-                        final String namesString = ctx.getArgument("names", String.class);
+                        @SuppressWarnings("unchecked")
+                        List<String> nameVars = ctx.getArgument("names", List.class);
 
-                        addName(ctx.getSource(), namesString);
+                        addName(ctx.getSource(), nameVars);
 
                         return Command.SINGLE_SUCCESS;
                     })
@@ -70,19 +71,17 @@ public class VNamesCommand {
         .build();
     }
 
-    private void addName(CommandSourceStack sourceStack, String namesString) {
-        String[] names = namesString.split("\\s+");
-
-        assert names.length > 0;
+    private void addName(CommandSourceStack sourceStack, List<String> nameVariants) {
+        assert nameVariants.size() > 0;
 
         String _msg = "Added name: ";
 
-        if (names.length == 1) {
-            this.vnp.addName(names[0]);
-            _msg += names[0];
+        if (nameVariants.size() == 1) {
+            this.vnp.addName(nameVariants.get(0));
+            _msg += nameVariants.get(0);
         }
         else {
-            List<String> nameList = List.of(names);
+            List<String> nameList = List.copyOf(nameVariants);
             this.vnp.addName(nameList);
             _msg += nameList.toString();
         }
