@@ -61,9 +61,20 @@ public class VNamesCommand {
             )
             .then(Commands.literal("reload")
                 .executes(ctx -> {
+                    ctx.getSource().getSender().sendMessage("Reloading names from config...");
+
                     this.vnp.reloadConfig();
 
-                    ctx.getSource().getSender().sendMessage("Reloading names from config...");
+                    int lNsuccess = this.vnp.loadNames();
+                    switch (lNsuccess) {
+                        case 0: // success
+                            this.vnp.getLogger().info("Names successfully loaded from config");
+                            break;
+                        case 1: // failure
+                            this.vnp.getLogger().severe("Failed to load names from config!");
+                        default:
+                            break;
+                    }
 
                     return Command.SINGLE_SUCCESS;
                 })
