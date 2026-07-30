@@ -7,12 +7,14 @@ package gay.viktoria.mvillagenamer;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.logging.Level;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -34,6 +36,7 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
 
     private boolean debugEnabled;
 
+    @SuppressWarnings("null")
     @Override
     public void onEnable() {
 
@@ -51,6 +54,11 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         getLogger().info("Successfully registered the /namechunk command");
         this.getCommand("renametag").setExecutor(new ReNameTagCommand());
         getLogger().info("Successfully registered the /renametag command");
+
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            VNamesCommand vncmd = new VNamesCommand(this);
+            commands.registrar().register(vncmd.createCommand(), "Manage villager names");
+        });
 
 
         int lNsuccess = loadNames();
@@ -73,42 +81,16 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         startPeriodicNameCheck();
     }
 
-    private int loadNames() {
-        var names = getConfig().getList("names");
-        if (names == null || names.isEmpty()) {
-            // Shouldn't reach this point because .getList() should return the default config list if the "names" path doesn't exist or it is empty
+    int loadNames() {
+        try {
+            final CircularList<ArrayList<String>> names = getConfigNames();
+            NameGen = new NameGenerator(names);
+
+            return 0;
+        } catch (IllegalStateException e) {
             getLogger().log(Level.SEVERE, "Was not able to load any names from config.yml. Perhaps it is empty?");
             return 1;
         }
-
-        
-        CircularList<ArrayList<String>> namesCircList = new CircularList<ArrayList<String>>();
-
-        for (var member : names.toArray()) {
-            ArrayList<String> nameSubArr = new ArrayList<>();
-
-            if (member instanceof String s) {
-                nameSubArr.add(s);
-            }
-            else if (member instanceof List<?> l && l.stream().allMatch(String.class::isInstance)) {
-                @SuppressWarnings("unchecked")
-                List<String> strings = (List<String>) l;
-
-                nameSubArr.addAll(strings);
-            }
-
-            namesCircList.add(nameSubArr);
-            debug(() -> "Found name: %s".formatted(nameSubArr.toString()));
-        }
-
-        if (namesCircList.isEmpty()) {
-            getLogger().log(Level.WARNING, "Was not able to load any names from config.yml. Perhaps it is empty?");
-            return 1;
-        }
-
-        NameGen = new NameGenerator(namesCircList);
-
-        return 0;
     }
 
     @EventHandler
@@ -199,5 +181,140 @@ public class VillageNamerPlugin extends JavaPlugin implements Listener {
         if (debugEnabled) {
             getLogger().info("[DEBUG] " + messageSupplier.get());
         }
+    }
+
+    CircularList<ArrayList<String>> getConfigNames() throws IllegalStateException {
+        var names = getConfig().getList("names");
+        if (names == null || names.isEmpty()) {
+            // Shouldn't reach this point because .getList() should return the default config list if the "names" path doesn't exist or it is empty
+            throw new IllegalStateException("Was not able to load any names from config.yml. Perhaps it is empty?");
+            //return 1;
+        }
+
+        
+        CircularList<ArrayList<String>> namesCircList = new CircularList<ArrayList<String>>();
+
+        for (var member : names.toArray()) {
+            ArrayList<String> nameSubArr = new ArrayList<>();
+
+            if (member instanceof String s) {
+                nameSubArr.add(s);
+            }
+            else if (member instanceof List<?> l && l.stream().allMatch(String.class::isInstance)) {
+                @SuppressWarnings("unchecked")
+                List<String> strings = (List<String>) l;
+
+                nameSubArr.addAll(strings);
+            }
+
+            namesCircList.add(nameSubArr);
+            debug(() -> "Found name: %s".formatted(nameSubArr.toString()));
+        }
+
+        if (namesCircList.isEmpty()) {
+            throw new IllegalStateException("Was not able to load any names from config.yml. Perhaps it is empty?");
+            //return 1;
+        }
+
+        return namesCircList;
+    }
+
+    public void addName(String name) {
+        List<?> l = getConfig().getList("names");
+        if (!l.stream().allMatch(Object.class::isInstance)) {
+            return;
+        };
+
+        @SuppressWarnings("unchecked")
+        List<Object> names = (List<Object>) l;
+        names.add(name);
+
+        getConfig().set("names", names);
+        
+        saveConfig();
+
+        reloadConfig();
+
+        loadNames();
+    }
+
+    public void addName(List<String> nameVariants) {
+        List<?> l = getConfig().getList("names");
+        if (!l.stream().allMatch(Object.class::isInstance)) {
+            return;
+        }
+        ;
+
+        @SuppressWarnings("unchecked")
+        List<Object> names = (List<Object>) l;
+
+        List<String> newNames = new ArrayList<>();
+        newNames.addAll(nameVariants);
+
+        names.add(newNames);
+
+        getConfig().set("names", names);
+        saveConfig();
+        reloadConfig();
+        loadNames();
+    }
+
+    public int removeName(String name) {
+        List<?> l = getConfig().getList("names");
+        if (!l.stream().allMatch(Object.class::isInstance)) {
+            throw new IllegalStateException("All list members must be Object's");
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Object> names = (List<Object>) l;
+
+        int numRemoved = 0;
+
+        /* 
+        for (var nameobj : names) {
+            if (nameobj instanceof String s && s.equals(name)) {
+                names.remove(nameobj);
+                numRemoved += 1;
+            }
+            else if (nameobj instanceof List<?> variants) {
+                for (var variant : variants) {
+                    if (variant instanceof String s && s.equals(name)) {
+                        variants.remove(variant);
+                        numRemoved += 1;
+                    }
+                }
+            }
+        }
+         */
+
+        Iterator<Object> it = names.iterator();
+
+        while (it.hasNext()) {
+            Object obj = it.next();
+
+            if (obj instanceof String s && s.equals(name)) {
+                it.remove();
+                numRemoved += 1;
+            }
+            else if (obj instanceof List<?> variants) {
+                Iterator<?> subit = variants.iterator();
+
+                while (subit.hasNext()) {
+                    var subname = subit.next();
+
+                    if (subname instanceof String s && s.equals(name)) {
+                        subit.remove();
+                        numRemoved += 1;
+                    }
+                }
+            }
+        }
+
+        getConfig().set("names", names);
+        saveConfig();
+        reloadConfig();
+        loadNames();
+
+        return numRemoved;
     }
 }

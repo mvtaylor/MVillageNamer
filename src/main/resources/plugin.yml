@@ -10,8 +10,12 @@ commands:
   namechunk:
     description: Assigns names to unnamed villagers in the chunk of the executor.
     usage: /namechunk
-    permission: villagenamer.namechunk
+    permission: mvillagenamer.namechunk
   renametag:
     description: Gives the player a name tag with the custom name "RENAMEME" for application in renaming.
     usage: /renametag
-    permission: villagenamer.renametag
+    permission: mvillagenamer.renametag
+  vnames:
+    description: Manage villager names
+    usage: /vnames
+    permission: mvillagenamer.vnames

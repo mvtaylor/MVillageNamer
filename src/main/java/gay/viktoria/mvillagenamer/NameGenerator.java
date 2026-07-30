@@ -22,6 +22,19 @@ public class NameGenerator extends CircularList<ArrayList<String>> {
 
         this.addAll(new ArrayList<>(namelist));
 
+        int startIdx = RANDOM.nextInt(this.size());
+
+        VillageNamerPlugin.getPlugin(VillageNamerPlugin.class).debug(() -> "Starting at index: %d".formatted(startIdx));
+
+        for (int i = 0; i < startIdx; i++) {
+            try {
+                String nameSet = this.getNext().toString();
+                VillageNamerPlugin.getPlugin(VillageNamerPlugin.class).debug(() -> "Skipped name: %s".formatted(nameSet));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public NameGenerator() {
