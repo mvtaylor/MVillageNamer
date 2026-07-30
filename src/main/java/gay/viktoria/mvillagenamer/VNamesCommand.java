@@ -115,7 +115,7 @@ public class VNamesCommand {
             if (nameVars.size() == 1) {
                 nameColl = nameVars.get(0);
             } else {
-                nameColl = nameVars.toString();
+                nameColl = String.join("/", nameVars);
             }
             nameStrings.add(nameColl);
         }
